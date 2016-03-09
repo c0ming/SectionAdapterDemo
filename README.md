@@ -29,16 +29,21 @@ public class DemoAdapter extends SectionAdapter {
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int section, int row) {
-        if (section == 0 || section == 3) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, IndexPath indexPath) {
+        if (indexPath.section == 0 || indexPath.section == 3) {
             ViewHolder1 viewHolder = (ViewHolder1) holder;
-            viewHolder.mTextView.setText("[section] == " + section + ", [row] == " + row);
+            viewHolder.mTextView.setText("[section] == " + indexPath.section + ", [row] == " + indexPath.row);
         } else {
             ViewHolder2 viewHolder = (ViewHolder2) holder;
-            viewHolder.mTextView.setText("[section] == " + section + ", [row] == " + row);
+            viewHolder.mTextView.setText("[section] == " + indexPath.section + ", [row] == " + indexPath.row);
         }
 
         Log.i("c0ming", "[VH] = " + holder.toString());
+    }
+
+    @Override
+    public void onItemClick(RecyclerView.ViewHolder holder, IndexPath indexPath) {
+        Log.i("c0ming", "[section] == " + indexPath.section + ", [row] == " + indexPath.row);
     }
 }
 ```

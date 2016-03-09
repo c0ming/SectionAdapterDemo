@@ -1,15 +1,16 @@
 package me.c0ming;
 
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class SectionAdapter extends RecyclerView.Adapter {
-    private class IndexPath {
-        private int section;
-        private int row;
+    public class IndexPath {
+        public int section;
+        public int row;
 
         public IndexPath(int section, int row) {
             this.section = section;
@@ -21,13 +22,27 @@ public abstract class SectionAdapter extends RecyclerView.Adapter {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return onCreateViewHolderInSection(parent, viewType);
+        final RecyclerView.ViewHolder viewHolder = onCreateViewHolderInSection(parent, viewType);
+        if (viewHolder != null) {
+            viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (v.getParent() instanceof RecyclerView) {
+                        RecyclerView recyclerView = (RecyclerView) v.getParent();
+                        int position = recyclerView.getLayoutManager().getPosition(v);
+                        IndexPath indexPath = mIndexPaths.get(position);
+                        onItemClick(viewHolder, indexPath);
+                    }
+                }
+            });
+        }
+        return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         IndexPath indexPath = mIndexPaths.get(position);
-        onBindViewHolder(holder, indexPath.section, indexPath.row);
+        onBindViewHolder(holder, indexPath);
     }
 
     @Override
@@ -77,5 +92,7 @@ public abstract class SectionAdapter extends RecyclerView.Adapter {
 
     public abstract RecyclerView.ViewHolder onCreateViewHolderInSection(ViewGroup parent, int section);
 
-    public abstract void onBindViewHolder(RecyclerView.ViewHolder holder, int section, int row);
+    public abstract void onBindViewHolder(RecyclerView.ViewHolder holder, IndexPath indexPath);
+
+    public abstract void onItemClick(RecyclerView.ViewHolder holder, IndexPath indexPath);
 }
